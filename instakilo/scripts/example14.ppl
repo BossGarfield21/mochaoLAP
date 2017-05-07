@@ -1,0 +1,10 @@
+load images/castle.ppm
+gradient-c 512 512
+mask
+load images/castle.ppm
+blur 5
+gradient-c 512 512
+negative
+mask
+add
+store output/res14.ppm

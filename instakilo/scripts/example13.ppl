@@ -1,0 +1,3 @@
+load images/fighter.ppm
+blur 5
+store output/res13.ppm

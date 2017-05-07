@@ -1,0 +1,5 @@
+load images/castle.ppm
+gradient-v 512 512
+sepia
+mask
+store output/res11.ppm

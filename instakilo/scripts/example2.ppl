@@ -1,0 +1,3 @@
+load images/lena.ppm
+sepia
+store output/res2.ppm

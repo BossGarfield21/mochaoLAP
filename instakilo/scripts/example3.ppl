@@ -1,0 +1,7 @@
+load images/parrot.ppm
+green 1024 768 65535
+blue 1024 768 65535
+add
+negative
+mask
+store output/res3.ppm

@@ -1,0 +1,6 @@
+red 500 500 30000
+green 500 500 30000
+blue 500 500 30000
+add
+add
+store output/res8.ppm

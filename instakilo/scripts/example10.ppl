@@ -1,0 +1,4 @@
+load images/space.ppm
+gradient-c 990 658
+mask
+store output/res10.ppm

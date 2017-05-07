@@ -1,0 +1,3 @@
+load images/castle.ppm
+negative
+store output/res6.ppm

@@ -1,0 +1,6 @@
+gradient-h 500 500 
+store output/res7-1.ppm
+gradient-v 500 500 
+store output/res7-2.ppm
+gradient-c 500 500 
+store output/res7-3.ppm

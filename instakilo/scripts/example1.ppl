@@ -1,0 +1,3 @@
+load images/baboon.ppm
+bw
+store output/res1.ppm

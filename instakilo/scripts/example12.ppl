@@ -1,0 +1,6 @@
+load images/parrot.ppm
+gradient-c 1024 768
+dup
+add
+mask
+store output/res12.ppm

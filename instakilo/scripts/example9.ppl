@@ -1,0 +1,4 @@
+load images/plane.ppm
+droplet 500 500 
+mask
+store output/res9.ppm
