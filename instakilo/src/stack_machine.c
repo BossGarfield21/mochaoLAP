@@ -21,6 +21,8 @@ typedef enum { HORIZONTAL, VERTICAL, CENTER } gradient_kind;
 
 static int intensity = 0xFFFF;
 
+
+
 void
 all_red (image *img, pixel *p, size_t i, size_t j)
 {
@@ -59,6 +61,94 @@ bw_pixels (image *img1, pixel *p, size_t i, size_t j)
 {
   color_field c = (3 * ((int) p->r) + 2 * ((int) p->g) + (int) p->b) / 6;
   p->r = p->g = p->b = c;
+}
+
+void
+negative_pixels (image *img1, pixel *p, size_t i, size_t j)
+{
+  p->r = __COLORS -((int)p->r);
+  p->g =  __COLORS - ((int)p->g);
+  p->b =  __COLORS - ((int)p->b);
+}
+
+void
+horizontal_pixels (image *img1, pixel *p, size_t i, size_t j)
+{
+  int a = img1->width;
+  color_field c = __COLORS - (__COLORS /  (double)a) *i;
+  p->r = p->g = p->b = c;
+}
+
+void
+vertical_pixels (image *img1, pixel *p, size_t i, size_t j)
+{
+  int a = img1->height;
+  color_field c = __COLORS - (__COLORS /  (double)a) *j;
+  p->r = p->g = p->b = c;
+}
+
+void
+centrals_pixels (image *img1, pixel *p, size_t i, size_t j)
+{ 
+  
+  int b = img1->height;
+  int a = img1->width;
+  double dx  = fabs (i - img1->width / 2.0);
+  double dy  = fabs (j - img1->height / 2.0);
+  double dst = sqrt (dx * dx + dy * dy);
+  double x = sqrt(a*a + b*b);
+  color_field e = __COLORS - (__COLORS / (x/2)) * dst;
+  p->r = p->g = p->b = e ;
+}
+
+void
+mask_pixels (image *img1, pixel *p, image *img2, pixel *q, size_t i, size_t j)
+{
+
+  p->r = to_mask ( q->r, __COLORS ) * p->r;
+  p->g = to_mask ( q->g, __COLORS ) * p->g;
+  p->b = to_mask ( q->b, __COLORS ) * p->b;
+
+}
+
+image*
+copiar_pixels (image *img, pixel_copy cp){
+	
+	image *img1 = create_empty_image(img1->width, img1->height);
+	pixel *pt = img->pixels;
+	for (size_t j = 0; j < img1->height; j++)
+   {
+    for (size_t i = 0; i < img1->width; i++)
+    {
+      cp (img, img1, pt++, i, j);
+    }
+  }
+  
+  return img1;
+}
+
+
+void
+dup_pixels(image *img, image *copy, pixel *p, size_t i, size_t j){
+	
+	
+	
+}
+
+image *
+combinar_imagens (image *img, image *arg, pixel_op op)
+{
+  pixel *pt1 = img->pixels;
+  pixel *pt2 = arg->pixels;
+  for (size_t j = 0; j < img->height; j++)
+  {
+    for (size_t i = 0; i < img->width; i++)
+    {
+      op (img, pt1++, arg, pt2++, i, j);
+    }
+  }
+	
+  return img;
 }
 
 void
@@ -158,27 +248,76 @@ ism_execute_sepia(void) {
 void
 ism_execute_add(void) {
     // TODO This function is part of the assignment
-	//fazer
+  image *img1 = image_stack_peek();
+  image_stack_pop ();
+
+  image *img2 = image_stack_peek();
+  image_stack_pop ();
+
+  combinar_imagens (img1, img2, add_pixels);
+  image_stack_push (img1);
 }
 
 void
 ism_execute_mask(void) {
     // TODO This function is part of the assignment
+  image *img1 = image_stack_peek();
+  image_stack_pop ();
+
+  image *img2 = image_stack_peek();
+  image_stack_pop ();
+  
+  combinar_imagens(img1, img2, mask_pixels);
+  image_stack_push (img1);
+	
 }
 
 void
 ism_execute_negative(void) {
     // TODO This function is part of the assignment
+	
+  image *img1 = image_stack_peek();
+  image_stack_pop ();
+  
+
+  paint_image (img1, negative_pixels);
+  image_stack_push (img1);
+  
 }
 
 void
 ism_execute_gradient( gradient_kind kind, str arg_line) {
     // TODO This function is part of the assignment
+	int a,b;
+	sscanf (arg_line, "%d", &a);
+	sscanf (arg_line, "%d", &b);
+	image *img1 = create_empty_image(a, b);
+	
+	switch( kind ) {
+    case HORIZONTAL: 
+      paint_image (img1, horizontal_pixels);
+      break;
+    case VERTICAL: 
+      paint_image (img1, vertical_pixels);
+      break;
+    case CENTER: 
+      paint_image (img1, centrals_pixels);
+      break;
+  }
+  
+	image_stack_push (img1);
 }
 
 void
 ism_execute_droplet(str arg_line) {
     // TODO This function is part of the assignment
+  int a, b;
+  sscanf (arg_line, "%d", &a);
+  sscanf (arg_line, "%d", &b);
+  image *img1 = create_empty_image(a, b);
+  
+  paint_image (img1, sin_distance_to_center);
+  image_stack_push (img1);
 }
 
 void
