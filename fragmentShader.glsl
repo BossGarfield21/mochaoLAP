@@ -1,4 +1,3 @@
-'Access-Control-Allow-Origin'
 precision mediump float;
 
 void main() {
